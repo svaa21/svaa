@@ -1,4 +1,6 @@
 {
+  "htmlWhitespaceSensitivity": "ignore",
+  "useTabs": false,
   "printWidth": 80,
   "tabWidth": 2,
   "semi": false,
@@ -11,7 +13,7 @@
   "bracketSameLine": false,
   "arrowParens": "avoid",
 
-  "plugins": ["prettier-plugin-astro"],
+  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
   "overrides": [
     {
       "files": "*.astro",
