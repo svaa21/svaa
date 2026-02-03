@@ -6,7 +6,7 @@
     "dev": "pnpm lint && pnpm format && next dev",
     "build": "pnpm lint && pnpm format && next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "tsc --noEmit && eslint . --max-warnings=0",
     "format": "prettier --check .",
     "format:fix": "prettier --write ."
   },
