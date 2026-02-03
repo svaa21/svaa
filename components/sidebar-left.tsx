@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Sidebar,
   SidebarContent,
@@ -6,12 +8,25 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  useSidebar
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { Home, User, Contact } from 'lucide-react'
+import { Home, Type } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-const groups = [
+type Item = {
+  icon?: LucideIcon
+  name: string
+  href: string
+}
+
+type Group = {
+  groupLabel: string
+  items: Item[]
+}
+
+const groups: Group[] = [
   {
     groupLabel: 'General',
     items: [
@@ -19,50 +34,48 @@ const groups = [
         icon: Home,
         name: 'Home',
         href: '/'
-      }
-    ]
-  },
-
-  {
-    groupLabel: 'Information',
-    items: [
-      {
-        icon: User,
-        name: 'Profile',
-        href: '/profile'
       },
       {
-        icon: Contact,
-        name: 'Contact',
-        href: '/contact'
+        icon: Type,
+        name: 'Fonts',
+        href: '/fonts'
       }
     ]
   }
 ]
 
+function SidebarGroups() {
+  const { setOpenMobile } = useSidebar()
+  return (
+    <>
+      {groups.map((group, index) => (
+        <SidebarGroup key={index}>
+          <SidebarGroupLabel>{group.groupLabel}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {group.items.map((item, index) => (
+                <SidebarMenuItem key={index}>
+                  <SidebarMenuButton asChild>
+                    <Link onClick={() => setOpenMobile(false)} href={item.href}>
+                      {item.icon && <item.icon />}
+                      <span>{item.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
+    </>
+  )
+}
+
 export function SidebarLeft() {
   return (
-    <Sidebar className='mt-2 pb-2' variant='sidebar' collapsible='icon'>
+    <Sidebar variant='sidebar' collapsible='icon'>
       <SidebarContent>
-        {groups.map((group, index) => (
-          <SidebarGroup key={index}>
-            <SidebarGroupLabel>{group.groupLabel}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item, index) => (
-                  <SidebarMenuItem key={index}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+        <SidebarGroups />
       </SidebarContent>
     </Sidebar>
   )
