@@ -6,43 +6,43 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import { Home, User, Contact } from "lucide-react";
+  SidebarMenuItem
+} from '@/components/ui/sidebar'
+import Link from 'next/link'
+import { Home, User, Contact } from 'lucide-react'
 
 const groups = [
   {
-    groupLabel: "General",
+    groupLabel: 'General',
     items: [
       {
         icon: Home,
-        name: "Home",
-        href: "/",
-      },
-    ],
+        name: 'Home',
+        href: '/'
+      }
+    ]
   },
 
   {
-    groupLabel: "Information",
+    groupLabel: 'Information',
     items: [
       {
         icon: User,
-        name: "Profile",
-        href: "/profile",
+        name: 'Profile',
+        href: '/profile'
       },
       {
         icon: Contact,
-        name: "Contact",
-        href: "/contact",
-      },
-    ],
-  },
-];
+        name: 'Contact',
+        href: '/contact'
+      }
+    ]
+  }
+]
 
 export function SidebarLeft() {
   return (
-    <Sidebar variant="sidebar" collapsible="icon">
+    <Sidebar className='mt-2 pb-2' variant='sidebar' collapsible='icon'>
       <SidebarContent>
         {groups.map((group, index) => (
           <SidebarGroup key={index}>
@@ -65,5 +65,5 @@ export function SidebarLeft() {
         ))}
       </SidebarContent>
     </Sidebar>
-  );
+  )
 }
