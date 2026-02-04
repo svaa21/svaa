@@ -22,23 +22,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from './ui/collapsible'
-
-type SubItem = {
-  name: string
-  href: string
-}
-
-type Item = {
-  icon?: LucideIcon
-  name: string
-  href: string
-  subItems?: SubItem[]
-}
-
-type Group = {
-  groupLabel?: string
-  items: Item[]
-}
+import { usePathname } from 'next/navigation'
 
 const groups: Group[] = [
   {
@@ -53,27 +37,24 @@ const groups: Group[] = [
         icon: Type,
         name: 'Fonts',
         href: '/fonts'
-      },
-      {
-        icon: Type,
-        name: 'Shadcn',
-        href: '/',
-        subItems: [
-          {
-            name: 'Button',
-            href: '/'
-          },
-          {
-            name: 'Input',
-            href: '/'
-          }
-        ]
       }
     ]
   }
 ]
 
+export function SidebarLeft() {
+  return (
+    <Sidebar variant='sidebar' collapsible='icon'>
+      <SidebarContent>
+        <SidebarGroups />
+      </SidebarContent>
+    </Sidebar>
+  )
+}
+
 function SidebarGroups() {
+  const pathname = usePathname()
+  console.log(pathname)
   const { setOpenMobile } = useSidebar()
   return (
     <>
@@ -87,7 +68,10 @@ function SidebarGroups() {
               {group.items.map((item, index) =>
                 !item.subItems ? (
                   <SidebarMenuItem key={index}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      isActive={item.href === pathname}
+                      asChild
+                    >
                       <Link
                         onClick={() => setOpenMobile(false)}
                         href={item.href}
@@ -99,27 +83,87 @@ function SidebarGroups() {
                   </SidebarMenuItem>
                 ) : (
                   <SidebarMenuItem key={index}>
-                    <Collapsible>
+                    <Collapsible
+                      defaultOpen={
+                        item.subItems.some(item => item.href === pathname) ||
+                        item.open
+                      }
+                    >
                       <CollapsibleTrigger className='group/collapsible' asChild>
                         <SidebarMenuButton>
+                          {item.icon && <item.icon />}
                           {item.name}
-                          <ChevronDown className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180' />
+                          <CollapsibleIcon />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <SidebarMenuSub>
-                          {item.subItems.map((subItem, index) => (
-                            <SidebarMenuSubItem key={index}>
-                              <SidebarMenuSubButton asChild>
-                                <Link
-                                  onClick={() => setOpenMobile(false)}
-                                  href={subItem.href}
+                          {item.subItems.map((subItem, index) =>
+                            !subItem.subSubItems ? (
+                              <SidebarMenuSubItem key={index}>
+                                <SidebarMenuSubButton
+                                  isActive={subItem.href === pathname}
+                                  asChild
                                 >
-                                  {subItem.name}
-                                </Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
+                                  <Link
+                                    onClick={() => setOpenMobile(false)}
+                                    href={subItem.href}
+                                  >
+                                    {subItem.icon && <subItem.icon />}
+                                    {subItem.name}
+                                  </Link>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ) : (
+                              <Collapsible
+                                defaultOpen={
+                                  subItem.subSubItems.some(
+                                    subSubItem => subSubItem.href === pathname
+                                  ) || subItem.open
+                                }
+                                key={index}
+                              >
+                                <CollapsibleTrigger
+                                  className='group/collapsible'
+                                  asChild
+                                >
+                                  <SidebarMenuSubButton>
+                                    {subItem.icon && <subItem.icon />}
+                                    {subItem.name}
+                                    <CollapsibleIcon />
+                                  </SidebarMenuSubButton>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                  <SidebarMenuSub>
+                                    {subItem.subSubItems.map(
+                                      (subSubItem, index) => (
+                                        <SidebarMenuSubItem key={index}>
+                                          <SidebarMenuSubButton
+                                            isActive={
+                                              subSubItem.href === pathname
+                                            }
+                                            asChild
+                                          >
+                                            <Link
+                                              onClick={() =>
+                                                setOpenMobile(false)
+                                              }
+                                              href={subSubItem.href}
+                                            >
+                                              {subSubItem.icon && (
+                                                <subSubItem.icon />
+                                              )}
+                                              {subSubItem.name}
+                                            </Link>
+                                          </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                      )
+                                    )}
+                                  </SidebarMenuSub>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            )
+                          )}
                         </SidebarMenuSub>
                       </CollapsibleContent>
                     </Collapsible>
@@ -134,12 +178,35 @@ function SidebarGroups() {
   )
 }
 
-export function SidebarLeft() {
+function CollapsibleIcon() {
   return (
-    <Sidebar variant='sidebar' collapsible='icon'>
-      <SidebarContent>
-        <SidebarGroups />
-      </SidebarContent>
-    </Sidebar>
+    <ChevronDown className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180' />
   )
+}
+
+type SubSubItem = {
+  icon?: LucideIcon
+  name: string
+  href: string
+}
+
+type SubItem = {
+  open?: boolean
+  icon?: LucideIcon
+  name: string
+  href: string
+  subSubItems?: SubSubItem[]
+}
+
+type Item = {
+  open?: boolean
+  icon?: LucideIcon
+  name: string
+  href: string
+  subItems?: SubItem[]
+}
+
+type Group = {
+  groupLabel?: string
+  items: Item[]
 }
