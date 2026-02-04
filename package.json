@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm format & pnpm lint & next dev",
-    "build": "pnpm format & pnpm lint & next build",
+    "dev": "pnpm format && pnpm lint && next dev",
+    "build": "pnpm format && pnpm lint && next build",
     "start": "next start",
-    "lint": "tsc --noEmit & eslint . --max-warnings=0",
+    "lint": "eslint . --max-warnings=0 & tsc --noEmit",
     "format": "prettier --check .",
     "format:fix": "prettier --write ."
   },
